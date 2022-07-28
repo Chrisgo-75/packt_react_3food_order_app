@@ -42,6 +42,7 @@ const cartReducer = (state, action) => {
       totalAmount: updatedTotalAmount
     };
   }
+  if (action.type === 'REMOVE') { console.log('Need to code up removing item.'); };
   return (defaultCartState);
 };
 
