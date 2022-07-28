@@ -14,11 +14,29 @@ const defaultCartState = {
 //    component is re-evaluated.
 const cartReducer = (state, action) => {
   if (action.type === 'ADD') {
-    // concat (JS) adds new item to an Array and returns a new array.
-    // vs push (JS) edits existing array.
-    // So you want to create a new array instead of editing the old array in memory.
-    const updatedItems = state.items.concat(action.item);
     const updatedTotalAmount = state.totalAmount + action.item.price * action.item.amount;
+
+    // Return item's index if it exists.
+    // findIndex() to return TRUE if item.id === action.item.id
+    const existingCartItemIndex = state.items.findIndex(item => item.id === action.item.id);
+    // Get existing-cart-item by reaching out to state.items[]
+    const existingCartItem = state.items[existingCartItemIndex];
+    let updatedItems;
+
+    if (existingCartItem) {
+      const updatedItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount + action.item.amount
+      };
+      updatedItems = [...state.items];
+      updatedItems[existingCartItemIndex] = updatedItem;
+    } else {
+      // concat (JS) adds new item to an Array and returns a new array.
+      // vs push (JS) edits existing array.
+      // So you want to create a new array instead of editing the old array in memory.
+      updatedItems = state.items.concat(action.item);
+    }
+
     return {
       items: updatedItems,
       totalAmount: updatedTotalAmount
